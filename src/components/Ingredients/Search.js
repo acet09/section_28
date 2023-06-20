@@ -11,8 +11,8 @@ const Search = React.memo(props => {
     const query =
       enteredFilter.length === 0
         ? ''
-        : `?orderBy="title"&eqeualTo="${enteredFilter}"`;
-    fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json')
+        : `?orderBy="title"&equalTo="${enteredFilter}"`;
+    fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json' + query)
       .then(response => response.json())
       .then(responseData => {
         const loadedIngredients = [];
@@ -23,10 +23,10 @@ const Search = React.memo(props => {
             amount: responseData[key].amount
           });
         }
-        onLoadIngredients(loadedIngredients);
+        // onLoadIngredients(loadedIngredients);
       });
   }, [enteredFilter, onLoadIngredients]);
-  //무한 루프 코드
+
   return (
     <section className="search">
       <Card>
