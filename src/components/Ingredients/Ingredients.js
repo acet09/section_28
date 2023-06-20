@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import IngredientForm from './IngredientForm';
 import IngredientList from './IngredientList';
@@ -6,6 +6,14 @@ import Search from './Search';
 
 const Ingredients = () => {
   const [userIngredients, setUserIngredients] = useState([]);
+
+  useEffect(() => {
+  });
+  fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json').then(
+    response => response.json())
+    .then(responseData => {
+
+    });
 
   const addIngredientHandler = ingredient => {
     fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json', {
