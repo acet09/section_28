@@ -26,7 +26,7 @@ const Search = React.memo(props => {
         onLoadIngredients(loadedIngredients);
       });
   }, [enteredFilter, onLoadIngredients]);
-
+  //무한 루프 코드
   return (
     <section className="search">
       <Card>
