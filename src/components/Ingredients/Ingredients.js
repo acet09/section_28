@@ -7,10 +7,6 @@ import Search from './Search';
 const Ingredients = () => {
   const [userIngredients, setUserIngredients] = useState([]);
 
-  useEffect(() => {
-    console.log('hi', userIngredients);
-  }, [userIngredients]);
-
   const filteredIngredientsHandler = useCallback(filteredIngredients => {
     setUserIngredients(filteredIngredients);
   }, []);
