@@ -69,7 +69,7 @@ const Ingredients = () => {
         // ]);
         dispatch({ type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
       })
-      .catch(error => { //전송시 오류 
+      .catch(error => { //전송시 오류메시지 추가
         dispatchHttp({ type: 'ADD_ERROR', errorMessage: `'추가' 에러 발생.` });
       });
   };
