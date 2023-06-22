@@ -26,10 +26,12 @@ const httpReducer = (curhttpState, action) => {
       return { ...curhttpState, loading: false };
     case 'ERROR':
       return { loading: false, error: action.errorMessage };
-    default:
-      throw new Error('Should not be reached!');
+    case 'ADD_ERROR': // 새로운 액션 타입 추가
+      return { ...curhttpState, error: action.errorMessage };
     case 'CLEAR':
       return { curhttpState, error: null };
+    default:
+      throw new Error('Should not be reached!');
   }
 }
 
@@ -67,8 +69,8 @@ const Ingredients = () => {
         // ]);
         dispatch({ type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
       })
-      .catch(error => {
-        dispatchHttp({ type: 'ERROR', errorMessage: '문제가 발생했습니다.' });
+      .catch(error => { //전송시 오류 
+        dispatchHttp({ type: 'ADD_ERROR', errorMessage: `'추가' 에러 발생.` });
       });
   };
 
@@ -84,7 +86,7 @@ const Ingredients = () => {
         dispatch({ type: 'DELETE', id: ingredientId })
       })
       .catch(error => {
-        dispatchHttp({ type: 'ERROR', errorMessage: '문제가 발생했습니다.' });
+        dispatchHttp({ type: 'ERROR', errorMessage: `'삭제' 에러 발생.` });
       });
   };
 
