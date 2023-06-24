@@ -27,12 +27,9 @@ const Ingredients = () => {
     data,
     sendRequest,
     reqExtra,
-    reqIdentifier
+    reqIdentifier,
+    clear
   } = useHttp();
-
-  // const [userIngredients, setUserIngredients] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState();
 
   useEffect(() => {
     if (!isLoading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
@@ -58,30 +55,7 @@ const Ingredients = () => {
       ingredient,
       'ADD_INGREDIENT'
     );
-    // dispatchHttp({ type: 'SEND' });
-    // fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json', {
-    //   method: 'POST',
-    //   body: JSON.stringify(ingredient),
-    //   headers: { 'Content-Type': 'application/json' }
-    // })
-    //   .then(response => {
-    //     dispatchHttp({ type: 'RESPONSE' });
-    //     return response.json();
-    //   })
-    //   .then(responseData => {
-    //     // setUserIngredients(prevIngredients => [
-    //     //   ...prevIngredients,
-    //     //   { id: responseData.name, ...ingredient }
-    //     // ]);
-    //     dispatch({ 
-    //        type: 'ADD', 
-    //        ingredient: { id: responseData.name, ...ingredient } 
-    //      });
-    //   });
-    //   .catch(error => { //전송시 오류메시지 추가
-    //     dispatchHttp({ type: 'ADD_ERROR', errorMessage: `'추가' 에러 발생.` });
-    //   });
-  }, []);
+  }, [sendRequest]);
 
   const removeIngredientHandler = useCallback(ingredientId => {
     sendRequest(
@@ -92,10 +66,6 @@ const Ingredients = () => {
       'REMOVE_INGREDIENT'
     );
   }, [sendRequest]);
-
-  const clearError = useCallback(() => {
-    // dispatchHttp({ type: 'CLEAR' });
-  }, []);
 
   const ingredientList = useMemo(() => {
     return (
@@ -109,7 +79,7 @@ const Ingredients = () => {
   return (
     <div className="App">
       {error && (
-        <ErrorModal onClose={clearError}>{error}</ErrorModal >
+        <ErrorModal onClose={clear}>{error}</ErrorModal >
       )}
 
       <IngredientForm

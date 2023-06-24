@@ -1,5 +1,15 @@
 import { useReducer, useCallback } from 'react';
 
+const initialState = {
+  loading: false,
+  error: null,
+  data: null,
+  extra: null,
+  identifier: null
+
+};
+
+
 const httpReducer = (curhttpState, action) => {
   switch (action.type) {
     case 'SEND':
@@ -17,42 +27,39 @@ const httpReducer = (curhttpState, action) => {
     case 'ADD_ERROR': // 새로운 액션 타입 추가
       return { ...curhttpState, error: action.errorMessage };
     case 'CLEAR':
-      return { curhttpState, error: null };
+      return initialState;
     default:
       throw new Error('Should not be reached!');
   }
 }
 
 const useHttp = () => {
-  const [httpState, dispatchHttp] = useReducer(httpReducer, {
-    loading: false,
-    error: null,
-    data: null,
-    extra: null,
-    identifier: null
-  });
+  const [httpState, dispatchHttp] = useReducer(httpReducer, initialState);
 
-  const sendRequest = useCallback((url, method, body, reqExtra, reqIdentifier) => {
-    dispatchHttp({ type: 'SEND', identifier: reqIdentifier });
-    fetch(
-      url,
-      {
-        method: method,
-        body: body,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => {
-        return response.json();
-      })
-      .then(responseData => {
-        dispatchHttp({ type: 'RESPONSE', responseData: responseData, extra: reqExtra });
-      })
-      .catch(error => {
-        dispatchHttp({ type: 'ERROR', errorMessage: `'삭제' 에러 발생.` });
-      });
-  }, []);
+  const clear = useCallback(() => dispatchHttp({ type: 'CLEAR' }), []);
+
+  const sendRequest = useCallback(
+    (url, method, body, reqExtra, reqIdentifier) => {
+      dispatchHttp({ type: 'SEND', identifier: reqIdentifier });
+      fetch(
+        url,
+        {
+          method: method,
+          body: body,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          return response.json();
+        })
+        .then(responseData => {
+          dispatchHttp({ type: 'RESPONSE', responseData: responseData, extra: reqExtra });
+        })
+        .catch(error => {
+          dispatchHttp({ type: 'ERROR', errorMessage: `'삭제' 에러 발생.` });
+        });
+    }, []);
 
   return {
     isLoading: httpState.loading,
@@ -60,7 +67,8 @@ const useHttp = () => {
     error: httpState.error,
     sendRequest: sendRequest,
     reqExtra: httpState.extra,
-    reqIdentifier: httpState.identifier
+    reqIdentifier: httpState.identifier,
+    clear: clear
   };
 };
 
