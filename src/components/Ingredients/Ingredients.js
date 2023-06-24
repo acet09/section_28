@@ -21,15 +21,29 @@ const ingredientReducer = (currentIngredients, action) => {
 
 const Ingredients = () => {
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []);
-  const { isLoading, error, data, sendRequest } = useHttp();
+  const {
+    isLoading,
+    error,
+    data,
+    sendRequest,
+    reqExtra,
+    reqIdentifier
+  } = useHttp();
 
   // const [userIngredients, setUserIngredients] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
   // const [error, setError] = useState();
 
   useEffect(() => {
-    console.log('RENDERING INGREDIENTS', userIngredients);
-  }, [userIngredients]);
+    if (!isLoading && !error && reqIdentifier === 'REMOVE_INGREDIENT') {
+      dispatch({ type: 'DELETE', id: reqExtra });
+    } else if (!isLoading && !error && reqIdentifier === 'ADD_INGREDIENT') {
+      dispatch({
+        type: 'ADD',
+        ingredient: { id: data.name, ...reqExtra }
+      });
+    }
+  }, [data, reqExtra, reqIdentifier, isLoading, error]);
 
   const filteredIngredientsHandler = useCallback(filteredIngredients => {
     // setUserIngredients(filteredIngredients);
@@ -37,6 +51,13 @@ const Ingredients = () => {
   }, []);
 
   const addIngredientHandler = useCallback(ingredient => {
+    sendRequest(
+      'https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json',
+      'POST',
+      JSON.stringify(ingredient),
+      ingredient,
+      'ADD_INGREDIENT'
+    );
     // dispatchHttp({ type: 'SEND' });
     // fetch('https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients.json', {
     //   method: 'POST',
@@ -52,8 +73,11 @@ const Ingredients = () => {
     //     //   ...prevIngredients,
     //     //   { id: responseData.name, ...ingredient }
     //     // ]);
-    //     dispatch({ type: 'ADD', ingredient: { id: responseData.name, ...ingredient } })
-    //   })
+    //     dispatch({ 
+    //        type: 'ADD', 
+    //        ingredient: { id: responseData.name, ...ingredient } 
+    //      });
+    //   });
     //   .catch(error => { //전송시 오류메시지 추가
     //     dispatchHttp({ type: 'ADD_ERROR', errorMessage: `'추가' 에러 발생.` });
     //   });
@@ -61,7 +85,11 @@ const Ingredients = () => {
 
   const removeIngredientHandler = useCallback(ingredientId => {
     sendRequest(
-      `https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`, 'DELETE'
+      `https://react-hook-e01fd-default-rtdb.firebaseio.com/ingredients/${ingredientId}.json`,
+      'DELETE',
+      null,
+      ingredientId,
+      'REMOVE_INGREDIENT'
     );
   }, [sendRequest]);
 
